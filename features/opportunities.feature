@@ -4,6 +4,13 @@ Feature:
   should be able to search for opportunities
 
   Scenario: API search for opportunities in available state
-    Given an opportunity
-    When I call meta_search with "state: available"
-    Then I should see json "{name: L12345, state: available}"
+    Given an opportunity with params:
+      | name  | L12345    |
+      | stage | available |
+    When I go with search params to the opportunities meta_search page:
+      | stage_equals  | available |
+      | name_contains | 123       |
+    Then I should see JSON:
+      """
+      [{"opportunity":{"name":"# L12345"}}]
+      """
