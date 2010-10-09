@@ -6,7 +6,7 @@
 
     def meta_search
       @search = #{model}.metasearch(params[:search])
-      @select = params[:select] || :name
+      @select = params[:select] || [:id, :name]
       @limit = params[:limit] || 10
 
       @results = @search.all(:select => @select, :limit => @limit)

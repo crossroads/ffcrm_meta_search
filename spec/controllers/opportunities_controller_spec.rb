@@ -18,7 +18,7 @@ describe OpportunitiesController do
       it "should perform meta search using params" do
         request.env["HTTP_ACCEPT"] = "application/json"
         get :meta_search, :search => {:stage_eq => "won"}
-        response.body.should == [ @won ].to_json(:include => :name)
+        response.body.should == [ @won ].to_json(:only => [:id, :name])
       end
     end
 
@@ -26,7 +26,7 @@ describe OpportunitiesController do
       it "should perform meta search using params and render XML" do
         request.env["HTTP_ACCEPT"] = "application/xml"
         get :meta_search, :search => {:stage_eq => "lost"}
-        response.body.should == [ @lost ].to_xml(:include => :name)
+        response.body.should == [ @lost ].to_xml(:only => [:id, :name])
       end
     end
   end
