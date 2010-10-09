@@ -6,14 +6,14 @@
 
     def meta_search
       @search = #{model}.metasearch(params[:search])
-      @select = params[:select] || [:id, :name]
+      @only = params[:only] || [:id, :name]
       @limit = params[:limit] || 10
 
-      @results = @search.all(:select => @select, :limit => @limit)
+      @results = @search.all(:limit => @limit)
 
       respond_to do |format|
-        format.json { render :json => @results }
-        format.xml  { render :xml => @results }
+        format.json { render :json => @results.to_json(:only => [false], :methods => @only) }
+        format.xml  { render :xml => @results.to_xml(:only => [false], :methods => @only) }
       end
     end
   }

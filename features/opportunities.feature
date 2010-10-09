@@ -9,8 +9,8 @@ Feature:
       | name  | L12345    |
       | stage | available |
     When I go with search params to the opportunities meta_search page:
-      | stage_equals  | available |
-      | name_contains | 123       |
+      | search[stage_equals]  | available |
+      | search[name_contains] | 123       |
     Then I should see JSON:
       """
       [{"opportunity":{"id":1,"name":"#1 L12345"}}]
