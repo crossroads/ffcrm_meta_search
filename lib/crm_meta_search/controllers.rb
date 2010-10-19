@@ -2,7 +2,7 @@
 
   controller = (model.name.pluralize + 'Controller').constantize
   controller.class_eval %Q{
-    before_filter :require_user, :except => :meta_search
+    skip_before_filter :require_user, :only => :meta_search
 
     def meta_search
       @search = #{model}.metasearch(params[:search])
