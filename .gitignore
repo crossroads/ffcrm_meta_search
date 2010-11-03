@@ -1,3 +1,14 @@
+coverage/*
+db/schema.rb
+db/*.sql*
+log/*.log
+tmp/**/*
+public/avatars/**/*
+public/javascripts/cache/*.js
+public/stylesheets/cache/*.css
 spec/debug.log
-*/reports
-coverage
+.DS_Store
+*~
+*.swp
+
+*/reports/*
