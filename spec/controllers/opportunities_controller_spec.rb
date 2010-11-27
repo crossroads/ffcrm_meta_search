@@ -18,15 +18,16 @@ describe OpportunitiesController do
       it "should perform meta search using params" do
         request.env["HTTP_ACCEPT"] = "application/json"
         get :meta_search, :search => {:stage_eq => "won"}
-        response.body.should == [ @won ].to_json(:only => [:id, :name])
+        response.body.should == [ @won ].to_json(:only => [:id], :methods => [:name])
       end
     end
 
     describe "with mime type of XML" do
       it "should perform meta search using params and render XML" do
         request.env["HTTP_ACCEPT"] = "application/xml"
-        get :meta_search, :search => {:stage_eq => "lost"}
-        response.body.should == [ @lost ].to_xml(:only => [:id, :name])
+        get :meta_search, :search => {:stage_eq => "lost"}       
+        # Uses :methods => :name, in case name is aliased to return #id - #name
+        response.body.should == [ @lost ].to_xml(:only => [:id], :methods => [:name])
       end
     end
   end
