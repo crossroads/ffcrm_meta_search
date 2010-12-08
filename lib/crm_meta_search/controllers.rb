@@ -3,7 +3,7 @@
   controller = (model.name.pluralize + 'Controller').constantize
   controller.class_eval do
 
-    skip_before_filter :require_user, :only => [:meta_search]
+    skip_before_filter :require_user, :only => :meta_search
     before_filter :require_application, :only => :meta_search
 
     def meta_search
@@ -35,16 +35,23 @@
 
     private
 
+    #----------------------------------------------------------------------------
     def klass
       @klass ||= self.class.name.gsub('Controller', '').singularize.constantize
     end
 
+    #----------------------------------------------------------------------------
     def current_application_session
       @current_application_session ||= ApplicationSession.find
     end
 
+    #----------------------------------------------------------------------------
     def require_application
-      current_application_session.present?
+      unless current_application_session
+        redirect_to login_url
+        false
+      end
     end
+
   end
 end
