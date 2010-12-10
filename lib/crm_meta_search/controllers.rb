@@ -7,6 +7,7 @@
     before_filter :require_application, :only => :meta_search
 
     def meta_search
+      id_hash = {}
       if params[:search][:id_in]
         id_hash = ContactAlias.ids_with_alias(params[:search][:id_in])
         params[:search][:id_in] = id_hash.values
