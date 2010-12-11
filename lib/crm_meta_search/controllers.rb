@@ -7,10 +7,10 @@
     before_filter :require_application, :only => :meta_search
 
     def meta_search
-      id_hash = {}
+      alias_id_hash = {}
       if params[:search][:id_in]
-        id_hash = ContactAlias.ids_with_alias(params[:search][:id_in])
-        params[:search][:id_in] = id_hash.values
+        alias_id_hash = ContactAlias.ids_with_alias(params[:search][:id_in])
+        params[:search][:id_in] = alias_id_hash.values
       end
 
       @search = klass.metasearch(params[:search])
@@ -18,12 +18,12 @@
       @limit = params[:limit] || 10
 
       @results = @search.all(:include => params[:include], :limit => @limit)
-      id_hash.each do |key, value|
-        if result = @results.detect { |r| r.id == value.to_i }
-          result.id = key # Associate merged
+      alias_id_hash.each do |asset_id, alias_id|
+        if result = @results.detect { |r| r.id == alias_id.to_i } and Contact.find_by_id(asset_id)
+          result.id = asset_id # Associate merged
         else
-          contact = Contact.new(:first_name => "Deleted", :last_name => "Contact")
-          contact.id = key
+          contact = Contact.new(:first_name => "[Deleted", :last_name => "Contact]")
+          contact.id = asset_id
           @results << contact
         end
       end
