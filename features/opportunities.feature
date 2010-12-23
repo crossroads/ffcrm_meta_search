@@ -4,7 +4,8 @@ Feature:
   should be able to search for opportunities
 
   Scenario: API search for opportunities in available state
-    Given an opportunity with params:
+    Given a logged in user
+    And an opportunity with params:
       | id    | 1         |
       | name  | L12345    |
       | stage | available |

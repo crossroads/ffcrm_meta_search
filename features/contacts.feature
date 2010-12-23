@@ -4,7 +4,8 @@ Feature:
   should be able to search for contacts
 
   Scenario: API search for contacts by id, first_name, last_name, phone, fax or email
-    Given an contact with params:
+    Given a logged in user
+    And an contact with params:
       | id         | 1             |
       | first_name | Bob           |
       | last_name  | Brown         |
