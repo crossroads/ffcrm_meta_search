@@ -19,8 +19,8 @@
 
       @results = @search.all(:include => params[:include], :limit => @limit)
       alias_id_hash.each do |asset_id, alias_id|
-        if result = @results.detect { |r| r.id == asset_id.to_i } and Contact.find_by_id(alias_id)
-          result.id = alias_id # Associate merged
+        if result = @results.detect { |r| r.id == alias_id.to_i } and Contact.find_by_id(asset_id)
+          result.id = asset_id # Associate merged
         else
           contact = Contact.new(:first_name => "[Deleted", :last_name => "Contact]")
           contact.id = asset_id
@@ -56,4 +56,3 @@
 
   end
 end
-
