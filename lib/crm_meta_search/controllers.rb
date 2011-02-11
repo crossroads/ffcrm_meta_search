@@ -46,8 +46,20 @@
           end
         end
       else
-        # If we are just searching for a single record
+        # Else, if we are just searching for a single record by id
         @results = @search
+
+        # If we are using the crm_merge plugin, we also need to duplicate a returned
+        # contact into a list including ancestors, in case the external application
+        # contains an entry with a merged id.
+        # (only if we are searching for a specific ID, though)
+        if defined?(ContactAlias) and params[:search][:id_equals] and @results.any?
+          contact = @results.first.dup
+          ContactAlias.find_all_by_contact_id(contact.id).each do |ancestor|
+            contact.id = ancestor.destroyed_contact_id
+            @results << contact
+          end
+        end
       end
 
       respond_to do |format|
