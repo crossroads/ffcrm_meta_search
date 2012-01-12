@@ -16,7 +16,7 @@
       end
 
       # Find all records that match our sanitized id set.
-      @search = klass.metasearch(params[:search])
+      @search = klass.search(params[:search])
       @only = params[:only] || [:id, :name]
       @limit = params[:limit] || 10
 
