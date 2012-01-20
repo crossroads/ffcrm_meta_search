@@ -16,7 +16,11 @@
       end
 
       # Find all records that match our sanitized id set.
-      @search = klass.search(params[:search]).result(:distinct => true)
+      if params[:search][:text_search]
+        @search = klass.text_search(params[:search][:text_search])
+      else
+        @search = klass.search(params[:search]).result(:distinct => true)
+      end
       @only = params[:only] || [:id, :name]
       @limit = params[:limit] || 10
 
