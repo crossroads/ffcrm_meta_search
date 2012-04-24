@@ -1,10 +1,21 @@
-begin
-  require File.dirname(__FILE__) + '/../../../../spec/spec_helper'
-rescue LoadError
-  puts "You need to install rspec in your base app"
-  exit
+require 'rubygems'
+require 'bundler'
+require 'rails/all'
+
+Bundler.require :default, :development
+
+# Load factories
+require 'factory_girl'
+require 'ffaker'
+Dir[Rails.root.join("spec/factories/*.rb")].each{ |f| require File.expand_path(f) }
+
+Combustion.initialize!
+
+require 'rspec/rails'
+
+require 'rspec/autorun'
+require 'fuubar'
+
+RSpec.configure do |config|
+  config.use_transactional_fixtures = true
 end
-
-plugin_spec_dir = File.dirname(__FILE__)
-ActiveRecord::Base.logger = Logger.new(plugin_spec_dir + "/debug.log")
-

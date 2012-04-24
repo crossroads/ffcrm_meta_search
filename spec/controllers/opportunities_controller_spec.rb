@@ -1,17 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe OpportunitiesController do
-  before(:each) do
-    # require_user
-  end
 
   # GET /opportunities/meta_search                                         AJAX
   #----------------------------------------------------------------------------
   describe "responding to GET meta_search" do
     before(:each) do
-      @account = Factory(:account)
-      @won  = Factory(:opportunity, :account => @account, :stage => 'won')
-      @lost = Factory(:opportunity, :account => @account, :stage => 'lost')
+      @account = FactoryGirl.create(:account)
+      @won  = FactoryGirl.create(:opportunity, :account => @account, :stage => 'won')
+      @lost = FactoryGirl.create(:opportunity, :account => @account, :stage => 'lost')
       @controller.stub(:require_application, true)
     end
 

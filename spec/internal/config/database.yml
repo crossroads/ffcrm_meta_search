@@ -1,0 +1,8 @@
+# Combustion always runs in test environment.
+test:
+  adapter: postgresql
+  database: fat_free_crm_test
+  username:
+  password:
+  schema_search_path: public
+  min_messages: warning
