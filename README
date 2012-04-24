@@ -1,5 +1,7 @@
 # FFCRM MetaSearch
 
+![test](https://secure.travis-ci.org/crossroads/ffcrm_meta_search.png?branch=master)
+
 Copyright (c) 2012 Global Hand, released under the MIT license.
 
 Meta Search integration for Fat Free CRM provides Fat Free CRM controllers
