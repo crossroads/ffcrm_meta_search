@@ -5,8 +5,10 @@
 
     skip_before_filter :require_user, :only => :meta_search
     before_filter :require_application, :only => :meta_search
+    skip_load_and_authorize_resource :only => :meta_search
 
     def meta_search
+
       alias_id_hash = {}
       if params[:search][:id_in]
         # Sanitizes params search ids, replaces deleted / merged object ids
@@ -84,11 +86,6 @@
     private
 
     #----------------------------------------------------------------------------
-    def klass
-      @klass ||= self.class.name.gsub('Controller', '').singularize.constantize
-    end
-
-    #----------------------------------------------------------------------------
     def current_application_session
       @current_application_session ||= ApplicationSession.find
     end
@@ -103,4 +100,3 @@
 
   end
 end
-
