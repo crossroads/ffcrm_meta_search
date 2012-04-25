@@ -6,10 +6,10 @@ rvm:
 
 gemfile: Gemfile
 
-bundler_args: --path=vendor/bundle --without heroku
+bundler_args: --path=vendor/bundle
 
 before_script:
-  - sh -c "psql -c 'create database fat_free_crm_test;' -U postgres"
+  - sh -c "psql -c 'create database ffcrm_meta_search_test;' -U postgres"
   - "export DISPLAY=:99"
   - "sh -e /etc/init.d/xvfb start"
 
