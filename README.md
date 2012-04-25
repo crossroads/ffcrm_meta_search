@@ -1,12 +1,13 @@
 # FFCRM MetaSearch
 
-![test](https://secure.travis-ci.org/crossroads/ffcrm_meta_search.png?branch=master)
+[![TravisCI][travis-img]][travis-ci]
+
+[travis-img]: https://secure.travis-ci.org/crossroads/ffcrm_meta_search.png?branch=master
+[travis-ci]: http://travis-ci.org/#!/crossroads/ffcrm_meta_search
 
 Copyright (c) 2012 Global Hand, released under the MIT license.
 
-Meta Search integration for Fat Free CRM provides Fat Free CRM controllers
-with the action 'meta_search' enabling complex queries. API authentication
-is required to call the action by implementing the 'require_application' method.
+Meta Search integration for Fat Free CRM provides Fat Free CRM controllers with the action 'meta_search' enabling complex queries. API authentication is required to call the action by implementing the 'require_application' method.
 
 ## Usage
 
@@ -18,7 +19,7 @@ is required to call the action by implementing the 'require_application' method.
 
 `rails s`
   
-* Navigate to 'http://localhost:3000/contacts/meta_search?only%5B%5D=id&only%5B%5D=name&only%5B%5D=email&search%5Balt_email_or_email_or_mobile_or_phone_cont%5D=12345678'
+* Navigate to [http://localhost:3000/contacts/meta_search?only%5B%5D=id&only%5B%5D=name&only%5B%5D=email&search%5Balt_email_or_email_or_mobile_or_phone_cont%5D=12345678](http://localhost:3000/contacts/meta_search?only%5B%5D=id&only%5B%5D=name&only%5B%5D=email&search%5Balt_email_or_email_or_mobile_or_phone_cont%5D=12345678)
 
 ## Params
 
