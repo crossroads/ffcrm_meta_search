@@ -12,3 +12,4 @@ spec/debug.log
 *.swp
 
 */reports/*
+Gemfile.lock
