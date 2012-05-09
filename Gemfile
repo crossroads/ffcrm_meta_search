@@ -16,7 +16,7 @@ group :test do
   gem 'rspec'
   gem 'combustion'
   gem 'fuubar'
-  gem 'faker'
+  gem 'ffaker'
   if RUBY_VERSION.to_f >= 1.9
     gem 'factory_girl_rails', '~> 3.0.0'
   else
