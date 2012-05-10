@@ -25,5 +25,6 @@ group :test do
   unless ENV["CI"]
     gem 'ruby-debug',   :platform => :mri_18
     gem 'debugger',     :platform => :mri_19
+    gem 'ci_reporter', '1.6.5'
   end
 end
