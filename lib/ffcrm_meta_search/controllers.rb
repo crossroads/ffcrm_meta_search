@@ -83,20 +83,5 @@
       end
     end
 
-    private
-
-    #----------------------------------------------------------------------------
-    def current_application_session
-      @current_application_session ||= ApplicationSession.find
-    end
-
-    #----------------------------------------------------------------------------
-    def require_application
-      unless current_application_session
-        redirect_to login_url
-        false
-      end
-    end
-
   end
 end
