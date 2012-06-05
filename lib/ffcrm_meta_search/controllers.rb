@@ -8,42 +8,71 @@
     skip_load_and_authorize_resource :only => :meta_search
 
     def meta_search
-
-      alias_id_hash = {}
-      if params[:search][:id_in]
-        # Sanitizes params search ids, replaces deleted / merged object ids
-        # with current ids.
-        alias_id_hash = ContactAlias.ids_with_alias(params[:search][:id_in])
-        params[:search][:id_in] = alias_id_hash.values.uniq
-      end
-
-      # Find all records that match our sanitized id set.
-      if params[:search][:text_search]
-        @search = klass.text_search(params[:search][:text_search])
-      else
-        @search = klass.search(params[:search]).result(:distinct => true)
-      end
-      @only = params[:only] || [:id, :name]
+      # TODO: need param santization. Currently full method access is available!
+      @only  = params[:only] || [:id, :name]
+      @only.unshift(:id) unless @only.map(&:to_sym).include?(:id)
       @limit = params[:limit] || 10
+      
+      unless params[:search].blank?
+        replace_aliases # modifies params[:search][:id_in]
 
-      @search = @search.all(:include => params[:include], :limit => @limit)
+        # Delegate search to ffcrm internal search (text_search) or ransack (#search)
+        if params[:search][:text_search]
+          search = klass.text_search(params[:search][:text_search])
+        else
+          search = klass.search(params[:search]).result(:distinct => true)
+        end
+        search = search.all(:limit => @limit)
+      else
+        search = []
+      end
 
+      @results = factor_aliases(search)
+      
+      options = {:only => [], :methods => @only}
+      options.deep_merge!(:include => { :account => { :only => [:id, :name] } }) if klass == Contact
+      respond_to do |format|
+        format.json { render :json => @results.to_json(options) }
+        format.xml  { render :xml => @results.to_xml(options) }
+      end
+    end
+
+    protected
+    
+    #
+    # Replaces deleted / merged object ids with current ids so our search is up to date.
+    # TODO: this should be refactored out into ffcrm_merge
+    #
+    def replace_aliases
+      if defined?(ContactAlias) and klass == Contact and params[:search] and params[:search][:id_in]
+        params[:search][:id_in] = ContactAlias.ids_with_alias(params[:search][:id_in]).values.uniq
+      end
+    end
+    
+    #
+    # Contact Alias stuff should be refactored out into ffcrm_merge and called via a hook
+    # perhaps there is a better place to hook in altogether
+    #
+    def factor_aliases(results)
+      
+      return results unless defined?(ContactAlias)
+      
+      new_results = []
       if params[:search][:id_in]
-        @results = []
+        alias_id_hash = {}
         # Iterate through search ids and the current asset id (for merged assets).
         alias_id_hash.each do |search_id, current_id|
-          # If the search results contain the search id, add to results.
-          if record = @search.detect{|record| record.id == search_id.to_i }
-            r = record.dup
-            r.id = search_id
-            @results << r
+          # If the search results contain the search id, add to new_results.
+          if record = results.detect{|record| record.id == results.to_i }
+            new_results.delete(klass.find(record.id))
+            new_results << klass.find(search_id)
           # Else, if the search results don't contain the search id,
           # but the search results do contain the current id, change the current
-          # id back to the old id and add to results.
-          elsif record = @search.detect{|record| record.id == current_id.to_i }
+          # id back to the old id and add to new_results.
+          elsif record = results.detect{|record| record.id == current_id.to_i }
             record_with_old_id = record.dup
             record_with_old_id.id = search_id
-            @results << record_with_old_id
+            new_results << record_with_old_id
           # Finally, if no record exists then object has been destroyed, not merged
           # so return a new 'deleted' object.
           else
@@ -57,30 +86,27 @@
               end
             obj = klass.new(deleted_params)
             obj.id = search_id
-            @results << obj
+            new_results << obj
           end
         end
       else
         # Else, if we are just searching for a single record by id
-        @results = @search
+        new_results = results
 
         # If we are using the crm_merge plugin, we also need to duplicate a returned
         # contact into a list including ancestors, in case the external application
         # contains an entry with a merged id.
         # (only if we are searching for a specific ID, though)
-        if defined?(ContactAlias) and params[:search][:id_equals] and @results.any?
-          contact = @results.first.dup
+        if defined?(ContactAlias) and params[:search][:id_equals] and new_results.any?
+          contact = new_results.first.dup
           ContactAlias.find_all_by_contact_id(contact.id).each do |ancestor|
             contact.id = ancestor.destroyed_contact_id
-            @results << contact
+            new_results << contact
           end
         end
       end
-
-      respond_to do |format|
-        format.json { render :json => @results.to_json(:only => [false], :methods => @only) }
-        format.xml  { render :xml => @results.to_xml(:only => [false], :methods => @only) }
-      end
+      
+      new_results
     end
 
   end

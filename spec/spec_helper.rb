@@ -1,21 +1,25 @@
 require 'rubygems'
-require 'bundler'
-require 'rails/all'
+require 'spork'
 
-Bundler.require :default, :development
+Spork.prefork do
+  require 'bundler'
+  require 'rails/all'
 
-# Load factories
-require 'factory_girl'
-require 'ffaker'
-Dir[Rails.root.join("spec/factories/*.rb")].each{ |f| require File.expand_path(f) }
+  Bundler.require :default, :development
 
-Combustion.initialize!
+  # Load factories
+  require 'factory_girl'
+  require 'ffaker'
+  Dir[Rails.root.join("spec/factories/*.rb")].each{ |f| require File.expand_path(f) }
 
-require 'rspec/rails'
+  Combustion.initialize!
 
-require 'rspec/autorun'
-require 'fuubar'
+  require 'rspec/rails'
 
-RSpec.configure do |config|
-  config.use_transactional_fixtures = true
+  require 'rspec/autorun'
+  require 'fuubar'
+
+  RSpec.configure do |config|
+    config.use_transactional_fixtures = true
+  end
 end
