@@ -13,6 +13,10 @@ Spork.prefork do
   Dir[Rails.root.join("spec/factories/*.rb")].each{ |f| require File.expand_path(f) }
 
   Combustion.initialize!
+  
+  # Reload User model after schema is loaded,
+  # so that Authlogic detects password fields
+  load 'user.rb'
 
   require 'rspec/rails'
 
