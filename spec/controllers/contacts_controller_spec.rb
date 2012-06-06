@@ -9,9 +9,12 @@ describe ContactsController do
       request.env["HTTP_ACCEPT"] = "application/json"
       @controller.stub(:require_application, true)
       @contact1 = FactoryGirl.create(:contact)
+      @contact1.account = @account1 = FactoryGirl.create(:account)
       @contact2 = FactoryGirl.create(:contact)
+      @contact2.account = @account2 = FactoryGirl.create(:account)
       @res = mock(:all => [@contact1, @contact2])
       @results = mock(:result => @res)
+      @json_opts = @xml_opts = {:only => [], :methods => [:id, :name], :include => {:account => {:only => [:id, :name]}} }
     end
 
     describe "with mime type" do
@@ -20,12 +23,12 @@ describe ContactsController do
       end
       it "JSON: should render JSON data" do
         get :meta_search, :search => {:id_eq => 1}
-        response.body.should == [ @contact1, @contact2 ].to_json(:only => [:id], :methods => [:name])
+        response.body.should == [ @contact1, @contact2 ].to_json(@json_opts)
       end
       it "XML: should render XML data" do
         request.env["HTTP_ACCEPT"] = "application/xml"
         get :meta_search, :search => {:id_eq => 1}
-        response.body.should == [ @contact1, @contact2 ].to_xml(:only => [:id], :methods => [:name])
+        response.body.should == [ @contact1, @contact2 ].to_xml(@xml_opts)
       end
     end
     
@@ -40,14 +43,11 @@ describe ContactsController do
     
     end
     
-    #
-    # Tests are a bit redundant but they give good documentation for what you can do
-    #
     describe "with ransack" do
     
       it "should run an id_in search" do
-        Contact.should_receive(:search).with('id_in' => ['1', '2', '3']).and_return(@results)
-        get :meta_search, :search => {:id_in => [1,2,3]}
+        get :meta_search, :search => {:id_in => [@contact1.id, @contact2.id]}, :only => [:id, :name, :email, :phone]
+        response.body.should == [@contact1, @contact2].to_json(:only => [], :methods => [:id, :name, :email, :phone], :include => {:account => {:only => [:id, :name]}})
       end
       
       it "should query ransack using custom fields" do
@@ -55,9 +55,28 @@ describe ContactsController do
         get :meta_search, :search => {:cf_weibo => '1234567890ABCDEF'}
       end
       
-      it "should query ransack using multi-field search" do
-        Contact.should_receive(:search).with('alt_email_or_email_or_mobile_or_phone_cont' => '1234').and_return(@results)
-        get :meta_search, :search => {:alt_email_or_email_or_mobile_or_phone_cont => '1234'}
+      describe "should query ransack using multi-field search: " do
+      
+        it 'phone' do
+          get :meta_search, :search => {:alt_email_or_email_or_mobile_or_phone_cont => @contact1.phone}
+          response.body.should == [@contact1].to_json(@json_opts)
+        end
+        
+        it 'email' do
+          get :meta_search, :search => {:alt_email_or_email_or_mobile_or_phone_cont => @contact2.email}
+          response.body.should == [@contact2].to_json(@json_opts)
+        end
+        
+        it 'email' do
+          get :meta_search, :search => {:alt_email_or_email_or_mobile_or_phone_cont => @contact1.alt_email}
+          response.body.should == [@contact1].to_json(@json_opts)
+        end
+        
+        it 'mobile' do
+          get :meta_search, :search => {:alt_email_or_email_or_mobile_or_phone_cont => @contact2.mobile}
+          response.body.should == [@contact2].to_json(@json_opts)
+        end
+      
       end
       
     end
@@ -67,18 +86,18 @@ describe ContactsController do
       it "should return id, name and email when id is not specified" do
         Contact.should_receive(:search).with('id_in' => ['1', '2', '3']).and_return(@results)
         get :meta_search, :search => {:id_in => [1,2,3]}, :only => [:name, :email]
-        response.body.should == [ @contact1, @contact2 ].to_json(:only => [], :methods => [:id, :name, :email])
+        response.body.should == [ @contact1, @contact2 ].to_json(:only => [], :methods => [:id, :name, :email], :include => {:account => {:only => [:id, :name]}})
       end
       
       it "should return name, email, phone and account id and name" do
-        account = FactoryGirl.create(:account)
-        @contact1.account = account
         Contact.should_receive(:search).with('id_eq' => '1').and_return(@results)
         get :meta_search, :search => {:id_eq => '1'}, :only => [:name, :email, :phone]
         resp = response.body
         resp.should == [ @contact1, @contact2 ].to_json(:only => [], :methods => [:id, :name, :email, :phone], :include => { :account => { :only => [:id, :name] } })
-        resp.should include(account.name)
-        resp.should include("#{account.id}")
+        resp.should include(@account1.name)
+        resp.should include("#{@account1.id}")
+        resp.should include(@account2.name)
+        resp.should include("#{@account2.id}")
       end
     
     end
@@ -87,7 +106,7 @@ describe ContactsController do
       get :meta_search
       response.body.should == [].to_json
     end
-        
+
   end
   
   describe "replace_aliases" do
