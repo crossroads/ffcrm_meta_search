@@ -108,13 +108,5 @@ describe ContactsController do
     end
 
   end
-  
-  describe "replace_aliases" do
-  
-  end
-  
-  describe "factor_aliases" do
-  
-  end
-  
+
 end

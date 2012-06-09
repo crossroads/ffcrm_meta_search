@@ -12,22 +12,16 @@
       @only  = params[:only] || [:id, :name]
       @only.unshift(:id) unless @only.map(&:to_sym).include?(:id)
       @limit = params[:limit] || 10
-      
+
+      @results = []
       unless params[:search].blank?
-        replace_aliases # modifies params[:search][:id_in]
-
-        # Delegate search to ffcrm internal search (text_search) or ransack (#search)
         if params[:search][:text_search]
-          search = klass.text_search(params[:search][:text_search])
+          @results = klass.text_search(params[:search][:text_search]) # ffcrm internal search
         else
-          search = klass.search(params[:search]).result(:distinct => true)
+          @results = klass.search(params[:search]).result(:distinct => true) # ransack
         end
-        search = search.all(:limit => @limit)
-      else
-        search = []
+        @results = @results.all(:limit => @limit)
       end
-
-      @results = factor_aliases(search)
       
       options = {:only => [], :methods => @only}
       options.deep_merge!(:include => { :account => { :only => [:id, :name] } }) if klass == Contact
@@ -40,8 +34,11 @@
     protected
     
     #
-    # Replaces deleted / merged object ids with current ids so our search is up to date.
-    # TODO: this should be refactored out into ffcrm_merge
+    # DEPRECATED - THESE FUNCTIONS ARE NOT LONGER USED
+    #
+    # We will factor both functions out into ffcrm_merge so that you can query which objects have been merged.
+    # e.g. a result of {'3' => '6'} should tell you that item id 3 has been merged into item id 6 and
+    # therefore you should update all ids of 3 to 6.
     #
     def replace_aliases
       if defined?(ContactAlias) and klass == Contact and params[:search] and params[:search][:id_in]
