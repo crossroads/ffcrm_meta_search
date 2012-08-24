@@ -25,6 +25,7 @@
       
       options = {:only => [], :methods => @only}
       options.deep_merge!(:include => { :account => { :only => [:id, :name] } }) if klass == Contact
+
       respond_to do |format|
         format.json { render :json => @results.to_json(options) }
         format.xml  { render :xml => @results.to_xml(options) }

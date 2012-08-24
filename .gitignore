@@ -10,6 +10,5 @@ spec/debug.log
 .DS_Store
 *~
 *.swp
-
+.rvmrc
 */reports/*
-Gemfile.lock

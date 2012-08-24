@@ -9,7 +9,7 @@ end
 
 gemspec
 
-gem 'fat_free_crm', :git => 'git://github.com/fatfreecrm/fat_free_crm.git'
+gem 'fat_free_crm', :git => 'git://github.com/fatfreecrm/fat_free_crm.git', :ref => 'b5ddf8ee58a1a8ef532a8c634175e951716f7ca8'
 
 group :test do
   gem 'pg'  # Default database for testing
