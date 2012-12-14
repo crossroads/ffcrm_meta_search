@@ -15,7 +15,6 @@ group :test do
   gem 'pg'  # Default database for testing
   gem 'rspec'
   gem 'combustion'
-  gem 'fuubar'
   gem 'ffaker'
   gem 'spork'
   if RUBY_VERSION.to_f >= 1.9
