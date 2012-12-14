@@ -13,19 +13,20 @@
       @only.unshift(:id) unless @only.map(&:to_sym).include?(:id)
       @limit = params[:limit] || 10
 
-      @results = []
-      unless params[:search].blank?
-        if params[:search][:text_search]
-          @results = klass.text_search(params[:search][:text_search]) # ffcrm internal search
+      @results =
+        if params[:search].blank?
+          [] # return nothing if no search
+        elsif params[:search][:text_search]
+          klass.text_search(params[:search][:text_search]).limit(@limit) # ffcrm internal search
         else
-          @results = klass.search(params[:search]).result(:distinct => true) # ransack
+          klass.search(params[:search]).result(:distinct => true).limit(@limit) # ransack
         end
-        @results = @results.all(:limit => @limit)
-      end
-      
-      options = {:only => [], :methods => @only}
-      options.deep_merge!(:include => { :account => { :only => [:id, :name] } }) if klass == Contact
 
+      options = {:only => [], :methods => @only}
+      options.deep_merge!(:include => { :account => { :only => [:id, :name] }, :account_contact => {:only => [:id, :account_id, :title, :department]} }) if klass == Contact
+
+      Rails.logger.debug "Finished CRM Search, sending back #{@results.to_json(options)}" if Rails.env == 'development'
+      
       respond_to do |format|
         format.json { render :json => @results.to_json(options) }
         format.xml  { render :xml => @results.to_xml(options) }

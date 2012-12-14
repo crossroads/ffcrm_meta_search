@@ -21,7 +21,6 @@ Spork.prefork do
   require 'rspec/rails'
 
   require 'rspec/autorun'
-  require 'fuubar'
 
   RSpec.configure do |config|
     config.use_transactional_fixtures = true

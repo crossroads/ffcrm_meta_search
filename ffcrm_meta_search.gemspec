@@ -14,7 +14,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'combustion'
   s.add_development_dependency 'pg'
   s.add_development_dependency 'bundler_local_development'
-  s.add_development_dependency 'fuubar'
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'factory_girl_rails'
   s.add_dependency 'fat_free_crm'
