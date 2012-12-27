@@ -35,6 +35,13 @@
 
     protected
     
+    
+    #----------------------------------------------------------------------------
+    def klass
+      @klass ||= controller_name.classify.constantize
+    end
+
+    
     #
     # DEPRECATED - THESE FUNCTIONS ARE NOT LONGER USED
     #

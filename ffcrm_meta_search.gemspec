@@ -9,12 +9,13 @@ Gem::Specification.new do |s|
   s.description = 'Fat Free CRM - Meta Search'
   s.files = `git ls-files`.split("\n")
   s.version = FatFreeCRM::MetaSearch::VERSION
+  s.test_files = Dir["spec/**/*"]
 
-  s.add_development_dependency 'rspec-rails', '~> 2.6'
-  s.add_development_dependency 'combustion'
-  s.add_development_dependency 'pg'
-  s.add_development_dependency 'bundler_local_development'
-  s.add_development_dependency 'ffaker'
-  s.add_development_dependency 'factory_girl_rails'
   s.add_dependency 'fat_free_crm'
+  s.add_development_dependency 'factory_girl_rails'
+  s.add_development_dependency 'capybara'
+  s.add_development_dependency 'rspec-rails'
+  #~ s.add_development_dependency 'rspec-rails', '~> 2.6'
+  s.add_development_dependency 'pg'
+  s.add_development_dependency 'ffaker'
 end

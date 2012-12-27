@@ -1,28 +1,18 @@
-require 'rubygems'
-require 'spork'
+ENV['RAILS_ENV'] ||= 'test'
 
-Spork.prefork do
-  require 'bundler'
-  require 'rails/all'
+require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+require 'rspec/rails'
+require 'rspec/autorun'
+require 'factory_girl_rails'
 
-  Bundler.require :default, :development
+Rails.backtrace_cleaner.remove_silencers!
 
-  # Load factories
-  require 'factory_girl'
-  require 'ffaker'
-  Dir[Rails.root.join("spec/factories/*.rb")].each{ |f| require File.expand_path(f) }
+# Load support files
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
-  Combustion.initialize!
-  
-  # Reload User model after schema is loaded,
-  # so that Authlogic detects password fields
-  load 'user.rb'
-
-  require 'rspec/rails'
-
-  require 'rspec/autorun'
-
-  RSpec.configure do |config|
-    config.use_transactional_fixtures = true
-  end
+RSpec.configure do |config|
+  config.mock_with :rspec
+  config.use_transactional_fixtures = true
+  config.infer_base_class_for_anonymous_controllers = false
+  config.order = "random"
 end
