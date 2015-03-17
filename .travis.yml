@@ -6,7 +6,7 @@ rvm:
 cache: bundler
 
 before_script:
-  - sh -c "psql -c 'create database ffcrm_merge_test;' -U postgres"
+  - sh -c "psql -c 'create database ffcrm_meta_search_test;' -U postgres"
   - sh -c "RAILS_ENV=test bundle exec rake db:schema:load"
 
 bundler_args: --path=vendor/bundle --without heroku
