@@ -1,5 +1,3 @@
-module FatFreeCRM
-  module MetaSearch
-    VERSION = '1.0.1'
-  end
+module FfcrmMetaSearch
+  VERSION = '2.0.0'
 end

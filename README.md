@@ -1,10 +1,5 @@
 # FFCRM MetaSearch
 
-[![TravisCI][travis-img]][travis-ci]
-
-[travis-img]: https://secure.travis-ci.org/crossroads/ffcrm_meta_search.png?branch=master
-[travis-ci]: http://travis-ci.org/#!/crossroads/ffcrm_meta_search
-
 Copyright (c) 2012 Global Hand, released under the MIT license.
 
 Meta Search integration for Fat Free CRM provides Fat Free CRM controllers with the action 'meta_search' enabling complex queries. API authentication is required to call the action by implementing the 'require_application' method.
@@ -27,13 +22,14 @@ Specify the following params to configure the search:
 
 * `:only => [:name, :email]` - will return name and email attributes in the results (note: id is always returned)
 * `:alt_email_or_email_or_mobile_or_phone_cont => 12345678` - will search the email, alt_email, mobile and phone fields for 12345678. For more examples, see the [meta_search] https://github.com/ernie/meta_search.git) documentation.
-* `app_key => 123123ASGEDF` - if you have turned on `require_application` you will want to pass an app_key to authenticate.
+* `api_key => 123123ASGEDF` - you will want to pass an api_key to authenticate.
 
 ## Tests
 
-To run the combustion tests, use
+To run tests:
 
-`rake spec`
+    rails db:test:prepare
+    rspec spec/
 
 The Gemfile.lock file references a fixed version of fat_free_crm, to ensure
 you are testing against the most recent version, be sure to

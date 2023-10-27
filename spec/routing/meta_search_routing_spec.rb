@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe "recognizes and generates #meta_search for", type: 'routing' do
   it "accounts" do
