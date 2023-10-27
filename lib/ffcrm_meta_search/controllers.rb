@@ -45,15 +45,17 @@ module FfcrmMetaSearch
 
       # rudimentary API KEY authentication for the aliases action
       def require_application
-        error = ""
-        if !Setting.ffcrm_meta_search.present?
-          error = 'No api key defined in Setting.ffcrm_meta_search. Rejecting all requests.'
+        if !Setting["ffcrm_meta_search"].present?
+          error = "No api key defined in Setting.ffcrm_meta_search. Rejecting all meta_search requests."
         elsif !params["api_key"].blank? && params["api_key"] == Setting['ffcrm_meta_search']['api_key']
           return true # skip the error rendering
         else
-          error = 'Please specify a valid api_key in the url.'
+          error = 'Please specify a valid api_key in the meta_search url.'
         end
-        render js: {errors: error}.to_json
+        respond_to do |format|
+          format.json { render json: [{ errors: error }] }
+          format.xml  { render xml:  [{ errors: error }] }
+        end
         false
       end
 

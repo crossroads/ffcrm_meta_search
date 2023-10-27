@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Opportunity#meta_search", type: :request do
+RSpec.describe "/contacts/meta_search", type: :request do
 
   # GET /contacts/meta_search                                              AJAX
   #----------------------------------------------------------------------------

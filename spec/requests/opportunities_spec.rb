@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Opportunity#meta_search", type: :request do
+RSpec.describe "/opportunities/meta_search", type: :request do
 
   # GET /opportunities/meta_search                                         AJAX
   #----------------------------------------------------------------------------
@@ -30,8 +30,8 @@ RSpec.describe "Opportunity#meta_search", type: :request do
 
     describe "with bad api_key" do
       it "should return error message" do
-        get "/opportunities/meta_search", params: { search: {stage_eq: "lost"}, api_key: 'bad' }
-        expect(response.body).to include("Please specify a valid api_key in the url.")
+        get "/opportunities/meta_search", params: { search: {stage_eq: "lost"}, api_key: 'bad' }, headers: { "ACCEPT" => "application/xml" }
+        expect(response.body).to include("Please specify a valid api_key in the meta_search url.")
       end
     end
 
