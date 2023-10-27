@@ -14,8 +14,10 @@ GIT
     acts_as_commentable (6.1.0)
       activerecord (~> 6.1.0)
 
-PATH
-  remote: ../fat_free_crm
+GIT
+  remote: https://github.com/fatfreecrm/fat_free_crm.git
+  revision: 0d834c8c20b41be3b07e19015ca37c1bb6450090
+  branch: master
   specs:
     fat_free_crm (0.21.0)
       activemodel-serializers-xml
